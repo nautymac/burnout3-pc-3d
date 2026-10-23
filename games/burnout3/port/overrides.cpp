@@ -334,9 +334,11 @@ void SetAspect(int which) { ps2host::SetWindowAspect(kAspects[which]); }
 const char* const kAntiAliasings[] = {"off", "fxaa", "smaa", "ssaa2"};
 int AntiAliasing() { return Among("antialiasing", kAntiAliasings); }
 void SetAntiAliasing(int which) { ps2host::SetWindowAntiAliasing(kAntiAliasings[which]); }
-// 3D (stereo.cpp): off or side by side, and its depth - a percentage of the
-// picture's width (Ctrl+F5 / F6 set it finer: the nearest shown).
-const char* const kStereoModes[] = {"off", "sbs"};
+// 3D (stereo.cpp): off, side by side, or side by side woven for an SR panel
+// (ps2sr.dll beside the executable and the SR runtime; side by side without),
+// and its depth - a percentage of the picture's width (Ctrl+F5 / F6 set it
+// finer: the nearest shown).
+const char* const kStereoModes[] = {"off", "sbs", "sr"};
 int Stereo() { return Among("stereo", kStereoModes); }
 void SetStereo(int which) { ps2host::SetWindowStereo(kStereoModes[which]); }
 const float kStereoDepths[] = {1.5f, 3.0f, 4.5f, 6.0f};
@@ -379,8 +381,8 @@ const Option kOptions[] = {
      SetAspect, {"ORIGINAL (4:3)", "WIDESCREEN (16:9)", "AUTO"}, 3},
     {Page::kVideo, "ANTIALIASING", "EDGES AS DRAWN, SMOOTHED (FXAA, SMAA), OR SUPERSAMPLED (SSAA)",
      AntiAliasing, SetAntiAliasing, {"OFF", "FXAA", "SMAA", "SSAA 2X"}, 4},
-    {Page::kVideo, "3D", "STEREO 3D: SIDE BY SIDE FOR A 3D SCREEN (TWO PICTURES A STEP)", Stereo, SetStereo,
-     {"OFF", "SIDE BY SIDE"}, 2},
+    {Page::kVideo, "3D", "STEREO 3D: SIDE BY SIDE FOR A 3D SCREEN, OR WOVEN FOR AN SR DISPLAY", Stereo, SetStereo,
+     {"OFF", "SIDE BY SIDE", "SR DISPLAY"}, 3},
     {Page::kVideo, "3D DEPTH", "HOW DEEP THE 3D LOOKS (FINER: CTRL WITH F5 OR F6)",
      StereoDepth, SetStereoDepth, {"LOW", "MEDIUM", "HIGH", "MOST"}, 4},
     {Page::kGraphics, "BLOOM", "THE GLOW AROUND LIGHTS: AS DRAWN, STRONGER, NONE, OR SOFTER", Bloom, SetBloom,
