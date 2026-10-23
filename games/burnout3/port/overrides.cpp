@@ -334,6 +334,24 @@ void SetAspect(int which) { ps2host::SetWindowAspect(kAspects[which]); }
 const char* const kAntiAliasings[] = {"off", "fxaa", "smaa", "ssaa2"};
 int AntiAliasing() { return Among("antialiasing", kAntiAliasings); }
 void SetAntiAliasing(int which) { ps2host::SetWindowAntiAliasing(kAntiAliasings[which]); }
+// 3D (stereo.cpp): off or side by side, and its depth - a percentage of the
+// picture's width (Ctrl+F5 / F6 set it finer: the nearest shown).
+const char* const kStereoModes[] = {"off", "sbs"};
+int Stereo() { return Among("stereo", kStereoModes); }
+void SetStereo(int which) { ps2host::SetWindowStereo(kStereoModes[which]); }
+const float kStereoDepths[] = {1.5f, 3.0f, 4.5f, 6.0f};
+int StereoDepth() {
+    const float now = float(std::atof(ps2host::Setting("stereo_depth", "3").c_str()));
+    int best = 0;
+    for (int i = 1; i < 4; ++i)
+        if (std::fabs(kStereoDepths[i] - now) < std::fabs(kStereoDepths[best] - now)) best = i;
+    return best;
+}
+void SetStereoDepth(int which) {
+    char text[16];
+    std::snprintf(text, sizeof text, "%.1f", kStereoDepths[which]);
+    ps2host::SetSetting("stereo_depth", text);
+}
 const char* const kPromptStyles[] = {"auto", "playstation", "xbox"};
 int ButtonPrompts() { return Among("button_prompts", kPromptStyles); }
 void SetButtonPrompts(int which) { ps2host::SetSetting("button_prompts", kPromptStyles[which]); }
@@ -361,6 +379,10 @@ const Option kOptions[] = {
      SetAspect, {"ORIGINAL (4:3)", "WIDESCREEN (16:9)", "AUTO"}, 3},
     {Page::kVideo, "ANTIALIASING", "EDGES AS DRAWN, SMOOTHED (FXAA, SMAA), OR SUPERSAMPLED (SSAA)",
      AntiAliasing, SetAntiAliasing, {"OFF", "FXAA", "SMAA", "SSAA 2X"}, 4},
+    {Page::kVideo, "3D", "STEREO 3D: SIDE BY SIDE FOR A 3D SCREEN (TWO PICTURES A STEP)", Stereo, SetStereo,
+     {"OFF", "SIDE BY SIDE"}, 2},
+    {Page::kVideo, "3D DEPTH", "HOW DEEP THE 3D LOOKS (FINER: CTRL WITH F5 OR F6)",
+     StereoDepth, SetStereoDepth, {"LOW", "MEDIUM", "HIGH", "MOST"}, 4},
     {Page::kGraphics, "BLOOM", "THE GLOW AROUND LIGHTS: AS DRAWN, STRONGER, NONE, OR SOFTER", Bloom, SetBloom,
      {"ORIGINAL", "HIGH", "OFF", "LOW"}, 4},
     {Page::kGraphics, "MOTION BLUR", "THE BLUR OF BOOSTING AND OF THE CAMERA, OR NONE", Blur, SetBlur,
@@ -1137,6 +1159,7 @@ void RegisterMouse();              // mouse.cpp
 void RegisterControls();           // controls.cpp
 void RegisterSixtyFps();           // sixty_fps.cpp
 void RegisterHighFps();            // high_fps.cpp
+void RegisterStereo();             // stereo.cpp
 void RegisterDevMenu();            // dev_menu.cpp
 void RegisterMods();               // mods.cpp
 void RegisterGraphics();           // graphics.cpp
@@ -1169,6 +1192,7 @@ void RegisterGameOverrides() {
     RegisterControls();
     RegisterSixtyFps();
     RegisterHighFps();
+    RegisterStereo();
     RegisterDevMenu();
     RegisterMods();
     RegisterGraphics();

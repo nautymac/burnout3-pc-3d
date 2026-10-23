@@ -31,6 +31,8 @@ void F_001F43B0(lifted::Context& c);
 void GraphicsFrame();
 void CustomSongsFrame();     // custom_songs.cpp
 void HighFpsFrame();         // high_fps.cpp
+void StereoFrame();          // stereo.cpp
+void StereoDrawStart();      // stereo.cpp
 
 namespace {
 
@@ -91,6 +93,7 @@ void Frame(lifted::Context& c) {
     GraphicsFrame();
     CustomSongsFrame();
     HighFpsFrame();
+    StereoFrame();
     if (On("mod.no_traffic")) generated::Write8(kTraffic, 0);
     if (On("mod.heavyweights")) {
         if (!g_heavyweights_set) g_heavyweights_was = u8(generated::ReadU8(kHeavyweights));
@@ -117,6 +120,7 @@ void Frame(lifted::Context& c) {
         }
     }
     F_001F43B0(c);
+    StereoDrawStart();
 }
 
 }  // namespace
