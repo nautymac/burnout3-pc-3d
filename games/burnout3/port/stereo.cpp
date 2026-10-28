@@ -55,6 +55,7 @@
 // RenderWare: a perspective camera's view matrix; RwCameraBeginUpdate.
 void F_001E1410(lifted::Context& c);
 void F_001E1FB0(lifted::Context& c);
+void F_004256C0(lifted::Context& c);
 
 namespace {
 
@@ -68,6 +69,45 @@ constexpr float kConvergenceDefault = 3.5f;
 constexpr int kViews = 8;
 u32 g_views[kViews] = {};
 int g_next_view = 0;
+
+/* The directional-blur update (004256C0) compares the camera with the
+   history at a0[0..0x0f], then overwrites that history and its parameters
+   through +0x24. If the right eye starts with what the left just wrote,
+   it sees no camera movement: CRASHBREAKER blurs only the left picture,
+   even at zero stereo depth. Start both eyes from the same prior state.
+   a1 is the player/view index from CB3World::Render (00276300). */
+struct BlurHistory {
+    u32 address = 0;
+    u32 before[10] = {};
+    u64 frame = 0;
+    bool pending = false;
+};
+BlurHistory g_blur_history[2];
+
+void DirectionalBlurUpdate(lifted::Context& c) {
+    const u32 view = u32(c.r[5]), address = u32(c.r[4]);
+    if (view >= 2) {
+        F_004256C0(c);
+        return;
+    }
+    BlurHistory& history = g_blur_history[view];
+    const int eye = ps2host::StereoWanted() ? ps2host::HighFpsEye() : 0;
+    const u64 frame = ps2host::FrameNumber();
+    if (eye == 1) {
+        if (!history.pending || history.address != address || history.frame != frame) {
+            history.address = address;
+            history.frame = frame;
+            for (u32 k = 0; k < 10; ++k) history.before[k] = u32(generated::ReadU32(address + 4u * k));
+            history.pending = true;
+        }
+    } else if (eye == 2 && history.pending && history.address == address && history.frame < frame) {
+        for (u32 k = 0; k < 10; ++k) generated::Write32(address + 4u * k, history.before[k]);
+        history.pending = false;
+    } else if (!eye) {
+        history.pending = false;
+    }
+    F_004256C0(c);
+}
 
 bool AView(u32 camera) {
     for (u32 v : g_views)
@@ -199,4 +239,6 @@ void StereoDrawStart() {
 void RegisterStereo() {
     ps2host::Override(0x001E1410u, ViewMatrix, "a perspective camera's view matrix: from the eye (3D, PC SETTINGS)");
     ps2host::Override(0x001E1FB0u, BeginUpdate, "RwCameraBeginUpdate: a view's camera, from the picture's eye (3D)");
+    ps2host::Override(0x004256C0u, DirectionalBlurUpdate,
+                      "directional blur: both eyes compare against the same previous camera (3D)");
 }
