@@ -501,6 +501,10 @@ int Fullscreen() { return ps2host::WindowFullscreen() ? 1 : 0; }
 void SetFullscreen(int on) { ps2host::SetWindowFullscreen(on != 0); }
 int Vsync() { return ps2host::WindowVsync() ? 1 : 0; }
 void SetVsync(int on) { ps2host::SetWindowVsync(on != 0); }
+int Vrr() { return ps2host::WindowVrr() ? 1 : 0; }
+void SetVrr(int on) { ps2host::SetWindowVrr(on != 0); }
+int GpuBoost() { return ps2host::WindowGpuBoost() ? 1 : 0; }
+void SetGpuBoost(int on) { ps2host::SetWindowGpuBoost(on != 0); }
 /* A setting's value among `values` (its index; the default's, `fallback`,
    if it is none of them - unset, the default). */
 template <std::size_t N>
@@ -639,9 +643,9 @@ template <const char* kKey>
 void SetMod(int on) { ps2host::SetSettingOn(kKey, on != 0); }
 constexpr char kModKph[] = "mod.kph", kModMirror[] = "mod.mirror",
                kModNoTraffic[] = "mod.no_traffic", kModCrashBreaker[] = "mod.crash_breaker",
-               kModHeadlights[] = "mod.headlights", kModHeavyweights[] = "mod.heavyweights",
+               kModHeadlights[] = "mod.headlights",
                kModVerticalSplit[] = "mod.vertical_split", kModDetachParts[] = "mod.detach_parts";
-// ORBIT CAMERA: on unless turned off (orbit_camera.cpp: OrbitCameraOn).
+// ORBIT CAMERA: off unless turned on (orbit_camera.cpp: OrbitCameraOn).
 int OrbitCamera() { return OrbitCameraOn() ? 1 : 0; }
 void SetOrbitCamera(int on) { ps2host::SetSettingOn("mod.orbit_camera", on != 0); }
 // TRAFFIC: OFF (no traffic, from the next race) or a density, 1X the game's
@@ -658,6 +662,10 @@ void SetTraffic(int which) {
 const Option kOptions[] = {
     {Page::kVideo, "FULLSCREEN", "THE WHOLE SCREEN OR A WINDOW (ALT+ENTER)", Fullscreen, SetFullscreen, {"OFF", "ON"}, 2},
     {Page::kVideo, "VERTICAL SYNC", "NO TEARING, OR THE LEAST DELAY", Vsync, SetVsync, {"OFF", "ON"}, 2},
+    {Page::kVideo, "VRR (G-SYNC, FREESYNC)", "ON IF YOUR SCREEN'S REFRESH FOLLOWS THE GAME: SMOOTH HIGH FRAME RATES",
+     Vrr, SetVrr, {"OFF", "ON"}, 2},
+    {Page::kVideo, "GPU BOOST", "THE GPU KEPT CLOCKED UP: NO HITCH AT A NEW SCENE. OFF SAVES BATTERY", GpuBoost, SetGpuBoost,
+     {"OFF", "ON"}, 2},
     {Page::kVideo, "FRAME RATE", "RACES AT 60 PICTURES A SECOND, 120, OR THE SCREEN'S RATE", FrameRate, SetFrameRate,
      {"60", "120", "DISPLAY"}, 3},
     {Page::kVideo, "RESOLUTION", "DRAWN AS THE PS2 DID, TWICE AS SHARP, OR AS SHARP AS THE SCREEN", Resolution,
@@ -710,8 +718,6 @@ const Option kOptions[] = {
      Mod<kModDetachParts>, SetMod<kModDetachParts>, {"OFF", "ON"}, 2},
     {Page::kMods, "HEADLIGHTS", "AS THE TRACK HAS THEM, OR EVERY RACE CAR'S ALWAYS ON", Mod<kModHeadlights>,
      SetMod<kModHeadlights>, {"ORIGINAL", "ALWAYS ON"}, 2},
-    {Page::kMods, "HEAVYWEIGHTS", "THE HEAVYWEIGHT CARS IN THE GARAGE IN EVERY MODE", Mod<kModHeavyweights>,
-     SetMod<kModHeavyweights>, {"ORIGINAL", "ALL MODES"}, 2},
     {Page::kMods, "SPLITSCREEN", "TWO PLAYERS' VIEWS ONE ABOVE THE OTHER, OR SIDE BY SIDE", Mod<kModVerticalSplit>,
      SetMod<kModVerticalSplit>, {"HORIZONTAL", "VERTICAL"}, 2},   // (VERTICAL: parts of the HUD still wrong, FINDINGS)
     {Page::kControls, "BUTTON PROMPTS", "THE BUTTONS SHOWN: YOUR CONTROLLER'S, PLAYSTATION OR XBOX", ButtonPrompts,
@@ -1492,6 +1498,7 @@ void RegisterMouse();              // mouse.cpp
 void RegisterControls();           // controls.cpp
 void RegisterSixtyFps();           // sixty_fps.cpp
 void RegisterSingleEvent();        // single_event.cpp
+void RegisterExtraSeries();        // extra_series.cpp
 void RegisterHighFps();            // high_fps.cpp
 void RegisterStereo();             // stereo.cpp
 void RegisterDevMenu();            // dev_menu.cpp
@@ -1528,6 +1535,7 @@ void RegisterGameOverrides() {
     RegisterControls();
     RegisterSixtyFps();
     RegisterSingleEvent();
+    RegisterExtraSeries();
     RegisterHighFps();
     RegisterStereo();
     RegisterDevMenu();

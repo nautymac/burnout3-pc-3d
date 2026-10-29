@@ -946,3 +946,285 @@ runs; medians and spread, --json and --compare.
   -7.5%, no timing at all -7%, both inexact) bound what they could win - a
   project of days for a few percent of one thread.
 - *An integrated GPU at 2x*: needs the iGPU chosen by hand; not measured.
+
+## The roadmap from here (2026-10-26)
+
+Where it stands: one player at 60 never drops a picture on a desktop; the
+refresh lock (engine d1a5aa7) took away the drift between the game's clock
+and the screen's (592 doubled and 997 missing refreshes in a race at 144
+before, none once locked). What is left drops pictures only where a thread
+runs out of time: the VIF1 worker (VU1) and the GS thread in a crash's
+explosion or pile-up at 144 with the modern graphics, and every thread on
+two cores. The levers the sampler and the ablations named are spent down
+to a few percent each (above); what is left to win is structural - more
+threads for the work that has one, or less work on the thread that limits.
+
+Every step as before: a bench.py baseline first (`--json`, then
+`--compare`), exact (GPU runs as recorded, VU hashes, host tests), PGO
+refreshed before a real-time comparison, PGO against PGO.
+
+### First: what players see (an evening)
+
+1. **A player's own numbers.** PS2HOST_REFRESH_LOG and PS2HOST_HITCH as a
+   PC SETTINGS row or an ini switch, written to a log beside the
+   executable: doubled and missing refreshes, late pictures and which
+   thread was busy before them. Reports then come with the machine's own
+   evidence (the VRR stutter reports came with none).
+2. **The refresh lock on a VRR screen**: a player's log, the lock giving
+   up ("follows the pictures") or not. Its give-up has only host tests.
+3. **Frame pacing on by default?** Off for the least delay; with the lock a
+   paced picture goes in the middle of a refresh (no slips in a race) for
+   about half a refresh more. Measure the delay both ways (the timeline's
+   "due after its blank") and decide with the user.
+4. **The first minutes**: pipeline compilations and the texture pack's
+   first loads in a fresh install (no pipeline cache) - a hitch list with
+   the profiler, then the missing pipeline hints recorded.
+
+### Night projects, biggest first
+
+**A. VU1 on more than one thread** (the largest; nights). The VIF1 worker
+runs every VU1 program of a frame in order, on one thread - the bound at
+144 and in the pile-up. Most of a frame's programs are separate objects:
+an MSCAL whose inputs (VU memory, VI and VF registers) were all written by
+the same packet's unpacks. Plan: (1) measure - for recorded frames, the
+share of programs whose reads are covered by their own packet's writes
+(the interpreter can mark every read's writer); if it is small, stop.
+(2) Run those on a pool of workers, each with its own VU state, their GIF
+output kept in order (the XGKICKs in program order, as PATH1 goes now);
+anything that reads what an earlier program left runs where it is now.
+(3) Exact by construction (same inputs, same programs, same order out);
+checked by the VU hashes and every GPU run. Worth it only with cores
+spare - off on two.
+
+**B. The GS thread's hand-over to the renderer** (a night or two). After
+the decoding work its largest part is OnDraw (~6.5 ms of the pile-up's
+17): the records written for the renderer (~27 MB a pass) and Drew's
+bookkeeping. A compact record - the state once a run, vertices as they
+came - and the renderer expanding them, moves work off the thread that
+limits onto one with room (the renderer's ~8-10 ms). Measure by ablation
+first (the records not written: the ceiling).
+
+**C. The renderer on the GPU's side** (nights; after B). Its thread still
+walks the primitives; with B's compact records a compute pass could build
+the vertex buffers and the draws from them (indirect draws), the thread
+only ordering state changes. Pays off with B; on its own, little.
+
+**D. Two cores** (a night). On two cores without HT the crash's pile-up
+still runs late (25-31 late pictures). Five busy threads on two cores: try
+the VIF1 work on the GS thread there (one hand-over less, no
+context switches between them), the renderer's on the GPU submission
+thread, and the timer's priorities - each switched on by core count,
+measured with lowbench.sh.
+
+**E. PGO for what players run** (an evening, again after each project).
+race_modern was added; still missing: the crash with an explosion,
+splitscreen, a mod-heavy race, a texture pack at 3x. What no training run
+reaches is laid out cold.
+
+**F. A nightly benchmark** (an evening, then for free). bench.py over the
+replays, the VU snapshots and the virtual-time runs, compared with the
+last night's JSON: a slow change found the night it lands, not a week
+later.
+
+### Not again, unless something changes
+
+The GS decode split (the hand-over costs more than the decoding it
+moves), VU1 clamp-free or dirty-mask bodies (code size), superblocks and
+VF registers across blocks (ceilings -7% of the VU bench), zero-copy
+PATH3, frame skipping (Burnout's own fixed-step loop already keeps its
+speed; a skip only drops pictures), stepping the frame rate down to hide a
+hitch.
+
+### A, measured first: VU1 on more than one thread (2026-10-26)
+
+The measure (engine, `PS2HOST_VU_DEPS=1` with `--vu-bench SNAPSHOT`;
+`PS2HOST_VU_DEPS_OUT=file` writes the graph): each run of a VU1 snapshot
+replayed on the interpreter from its own start - the data memory it reads
+before writing it (the interpreter's accesses), the registers and flags it
+reads (run again with each changed to random bits: what it sends, leaves
+in memory or in the other registers differs), what it writes; the VIF's
+writes between runs nobody's. A run depends on the last writers of what it
+reads; weighted by its pairs. MAC and STATUS as a run leaves them are left
+out (fast mode, the game's, does not keep them). Three snapshots, 20,000
+runs each: the crash's explosion (frame 20060), its pile-up (18860), the
+race (12500; ~1,150 runs a frame).
+
+| | explosion | pile-up | race |
+| --- | --- | --- | --- |
+| exact, any edge: the most side by side | 1.80x | 1.18x | 1.16x |
+| exact, 4 / 8 workers | 1.28x / 1.35x | 1.08x / 1.08x | 1.06x / 1.07x |
+| predicted edges gone, 4 / 8 workers, half a frame ahead | 4.0x / 7.5x | 4.0x / 5.1x | 3.9x / 5.1x |
+| predicted edges gone, 4 / 8 workers, 64 runs ahead | 2.6x / 3.0x | 2.3x / 2.5x | 2.4x / 2.7x |
+
+As the programs run, VU1's work is one chain: 3.1 of the race's 3.35
+million starts are MSCNT, a program going on where it stopped, and each run
+reads what the one before left - VI13 and VI14 (an output buffer's two
+pointers, swapped every run), VI15, VI12, VF28-31 (a matrix), and memory.
+Most of those reads are the value the same program began its previous run,
+or the run before that, with: predicted (VF28-31 ~90%, VI15 and VI12 99%,
+memory 80-83%). With them taken as predicted, the longest chain is 1/100
+to 1/160 of the work.
+
+So A is speculation or nothing: exact runs side by side win 6-35%. With
+each run started on predicted inputs and checked when its writers are done,
+4 workers could take VU1 to a quarter of its time - but it needs what each
+run reads known while it runs (the compiled code tracking its reads, or a
+whole-state compare that fails far more often than the reads do), a copy of
+data memory a run (~1,150 x 16 KB a frame: 2.6 GB/s at 144), the runs'
+XGKICKs held and sent in order, and a fall-back to the chain where a check
+fails. Days of work, its overheads not measured; and with VU1 a quarter,
+the GS thread is what limits the explosion at 144.
+
+Found on the way: Vu::Kick counted its runs from an address it had not
+wrapped - an XGKICK from VI past data memory's end read past the memory
+(no recorded program does it; a perturbed one did). Wrapped now.
+
+### B, measured: the GS thread's hand-over (2026-10-27)
+
+The pile-up's replay (`--gs-replay`, bench.py; without the profile: the GS
+thread 18 ms a pass), each part switched off in turn (a measure only):
+
+| switched off | GS thread | the part |
+| --- | --- | --- |
+| nothing | 17.97 ms | |
+| all of OnDraw | 8.91 | 9.06 ms: half the thread |
+| OnDraw past the vertices' conversion | 10.00 | conversion 1.1 |
+| past the bounds and the scissor's cull | 11.72 | bounds 1.7 |
+| the fast path past its choice | 14.38 | its tail 3.6 |
+| Drew on the fast path | 15.94 | 2.0 |
+| the records for the renderer (Same) | 15.78 | 2.2 |
+
+What the replay draws: 276,131 triangle-strip primitives, 7,301 sprites,
+a few hundred points and lines; 252,036 by the fast path, 10,107 the whole
+way (~300 ns each: ~3 ms). The registers stay the same over stretches of
+~36 primitives (7,253 stretches; 5,054 of 16 or more).
+
+**Tried, no gain (dropped).**
+- *Strips sent as strips*: a triangle continuing the one before sends its
+  third vertex only (a third of the bytes), the renderer's thread making
+  the triangles again: 18.28 against 17.97 ms - the records' cost is the
+  call and bookkeeping a primitive, not the bytes.
+- *The fast state kept through its own Drew* (g_mutations moved by the
+  fast path's drawing alone): 392 of the 10,107 whole-way primitives
+  saved, no change in time. What sends them the whole way, by where
+  g_mutations moves: Use 1,826, SyncWrite 1,581, Sync 1,571, LoadClut
+  1,343, Drew 1,138, MarkStale 1,117, CachedTexture 934, WriteBack 320 -
+  6,464 of them have the fast state's very registers.
+- *The extremes found once* (one loop for the bounds and the cull):
+  within the noise.
+
+**What is left, and its size.** Nothing here is one large part: the
+thread's OnDraw half is ~35 ns a primitive spread over conversion, bounds,
+checks, the record and Drew, and ~3 ms in the whole-way path.
+- *The primitives of a stretch handed over as one* (the GS model holding
+  them until anything but a vertex comes; the bridge one tight loop, one
+  record, Drew's quick path inline): ~3 ms of 18 (-15%), a refactor of the
+  GS model's hand-over and the bridge's fast path.
+- *g_mutations per resource, not one count*: two in three whole-way
+  primitives could stay fast (~2 ms), in the bookkeeping that decides when
+  memory and the GPU's images agree - the riskiest code in the bridge.
+- *Drew's rectangle as the dirty pages' largest*: more primitives on its
+  quick path, but its quick path already skips updating the drawn rows'
+  end; changing when it applies changes the bookkeeping, not only its
+  speed.
+
+## Hitches: a census, and the GPU's clocks (2026-10-27)
+
+True real time, windowed, the scripted race and crash runs (hf.sh), the
+profile from frame 11,900 (the pictures' pacing) and, with frame pacing off
+(the default), `PS2HOST_REFRESH_LOG` and `PS2HOST_HITCH` (a present more
+than 25 ms after the last):
+
+| run | late / dropped | longest |
+| --- | --- | --- |
+| race, 60, original, pacing off | 0 (blanks) | 17.98 ms |
+| crash, 60, 2x, pacing off | 0 (blanks) | 18.09 ms |
+| race, 144, 3x, the pack, pacing on | 0 / 0 | 9.10 ms |
+| crash, 144, 3x, the pack, pacing on | 2 / 5 | 11.40 ms (the explosion: VU1 12 ms) |
+
+The races themselves were clean; what stuttered was elsewhere - 4-10
+presents a run 26-103 ms apart in the menus, at a race's start and at the
+crash event's start, the same with the pipeline cache gone or kept (not
+the shaders). The crash event's start, profiled: the GPU renderer's
+thread waiting on a full ring of submissions for 25-40 ms - the GPU itself
+slow. nvidia-smi every 50 ms: through the loading screen the RTX 4070
+Laptop sat in P8 (360 MHz, its memory 405 MHz); the scene's first frames
+ran half a second at 98% in P5 (630 MHz, memory 810), then P0 (1,980 MHz,
+memory 8,001) at 22% - the same work, a tenth of the memory's speed.
+
+**NVIDIA's low-latency boost** (engine 8901b19, bd30d1d; game 1a326f4):
+VK_NV_low_latency2 where the driver has it, the swapchain made for it,
+the sleep mode set with its boost (its waits never made). PC SETTINGS >
+VIDEO > GPU BOOST, on by default (off: a laptop's battery).
+
+| | without | with |
+| --- | --- | --- |
+| crash event's start, 60 2x: late | 2, 4 | 0 |
+| race run at 60: presents over 25 ms | 4, 9 | 2, 2 (startup, title: two blanks, the game's own) |
+| race start, 144 3x the pack: late | 16, 7 | 2, 2 (the profile's first frame; one 11 ms VU1 picture) |
+
+The GPU then stays in P0-P4. Not covered: AMD and Intel GPUs (no such
+extension); a keep-warm load of our own would be their equivalent.
+
+Also: the high-fps trace's "turn" for a quaternion camera was its three
+values' dot product, a sign flip read as a 138-degree turn - now the
+rotation's angle. Its large "jump"/"twitch" lines in a race run are the
+race's own resets after a crash (cuts, shown as they are). The texture
+pack reads its files in the background (no stall at a new texture).
+
+## Smooth, low latency, low power (2026-10-27/28, night)
+
+**MODERN texture filtering by the GPU's sampler** (engine bee1d4b). The
+game's textures were filtered by hand in gs.frag (a gather and the GS's
+sixteenths), a texture pack's by the GPU - the pack-off crash start at
+144, 3x saturated (48-58 late, 120 a second). Each MODERN level is now one
+hardware bilinear fetch (REPEAT's seams two, mixed). The weights stay
+the GS's sixteenths and the values truncated: finer weights gave alpha 1
+where the GS has 0, and an alpha-tested polygon showed.
+
+| 3x replay, a picture | MODERN before | MODERN now | ORIGINAL |
+| --- | --- | --- | --- |
+| explosion | 7.35 ms | 6.93 ms | 6.79 ms |
+| crash start | 7.00 ms | 6.41 ms | 6.25 ms |
+
+Real time, pack off, crash start at 144 3x: 0 late at 144, then 5 late
+(was 48-58, both stepping to 120).
+
+**The occlusion's distances at its own resolution** (engine 6f9d7f5): a
+pass writes them once, the spiral and the sun's march read them, 0.9 ->
+0.75 ms of a 3x explosion picture. The rest is arithmetic: the main pass
+0.57 ms (the sun's 20-step march 0.17), the blurs and the apply 0.1 each.
+All four effects are about 1.4 ms of the explosion's 6.9 at 3x.
+
+**Refresh lead** (engine 8e4092a). The locked blanks fell on the screen's
+vblanks, and a picture done on the GPU a few ms after its blank waited
+nearly a whole refresh. An empty fenced submit after each present tells
+when the GPU finished. The blanks now lead the screen's by the longest
+blank-to-done of two seconds (+10%, +1 ms, modulo the refresh), when that
+beats the blanks on the vblanks. Pacing off only (the default).
+
+| fullscreen, race | blank to shown before | now |
+| --- | --- | --- |
+| 60 Hz screen, 60, 1x (3 ms to done) | 16.66 ms | 5.9-7.3 ms |
+| 144 Hz screen, 144, 3x (5.5 ms, peaks 8.5) | 7.3 ms | 7.3 ms (no lead: the next refresh is sooner) |
+
+No picture went to a refresh that had one, and none were late.
+`PS2HOST_REFRESH_LOG` prints `[latency]`; `PS2HOST_REFRESH_LEAD=0` turns
+it off.
+
+**FRAME RATE never above the screen's refresh** (engine 920a833): 144
+asked of a 60 Hz fullscreen mode drew 120 pictures a second, MAILBOX
+showing 60. GS thread 100%, 760 late, 83 ms blank to shown -> 60, GS 19%,
+none late, 10 ms. **Minimised, the game's own rate** (engine 55b9dbd;
+2 cores -> 0.7 at 144; not yet tried by hand).
+
+Measured, nothing to take:
+- The timer's last-700 us spin: the high-resolution sleep wakes 300-600 us
+  late (p90 600 us, p99 1.4-4 ms), so the margin is right.
+- The crash start's write-backs are small (32-128 wide).
+- The EE at 144 has no hotspot (the high-fps CSV trace itself is 9% of it -
+  a measuring cost, off for players).
+- At 144 the CPU is 2.8x 60's (EE 56%, VIF1 53%, GS 56%, renderer 34% of a
+  core at 1x): every picture runs the game's drawing.
+- Frame pacing ON holds a picture to 6 ms after its blank, then the middle
+  of a refresh - 10.4 ms at 144. It's opt-in (smoothness), left as it is.
