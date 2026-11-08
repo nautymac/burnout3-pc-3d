@@ -223,6 +223,16 @@ void BeginUpdate(lifted::Context& c) {
 
 }  // namespace
 
+/* As the game's frame starts (high_fps.cpp's FrameStart), before it sends
+   the list the frame before made: where that list ends - the DMA manager's
+   write pointer (0x004E27E0: through the views it walks one of the two list
+   buffers, 0x82xxxx or 0x92xxxx, and the list sent next starts where it
+   stopped). The list's eye then comes from the frame that made it, exactly
+   (ps2host::StereoListMade). */
+void StereoListEnds() {
+    if (ps2host::StereoWanted()) ps2host::StereoListMade(u32(generated::ReadU32(0x004E27E0u)) & 0x0FFFFFFFu);
+}
+
 /* Each picture (mods.cpp's Frame, before the draw). */
 void StereoFrame() {
     if (ps2host::StereoWanted()) Keys();

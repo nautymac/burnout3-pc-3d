@@ -25,6 +25,7 @@ void F_00131F90(lifted::Context& c);
 void F_002225C0(lifted::Context& c);
 
 void OrbitRestore();         // orbit_camera.cpp
+void StereoListEnds();       // stereo.cpp
 
 namespace {
 
@@ -69,6 +70,7 @@ void Ticks(lifted::Context& c) {
    it. */
 void FrameStart(lifted::Context& c) {
     OrbitRestore();                 // (orbit_camera.cpp: the camera as the game left it, first)
+    StereoListEnds();               // (stereo.cpp: the list the frame before made, its eye; before its send)
     ps2host::HighFpsFrameStart();
     F_002225C0(c);
 }
