@@ -1,5 +1,22 @@
 # Burnout 3: Takedown - PC port
 
+> **Stereo 3D build (nautymac, private).** This repository is
+> [danielgomesvieira2000/burnout3-pc](https://github.com/danielgomesvieira2000/burnout3-pc)
+> with stereo 3D added: side by side, and SR DISPLAY woven for Acer SpatialLabs
+> and other Leia SR panels (PC SETTINGS > VIDEO > 3D). Branch `stereo-3d`, on
+> the engine [nautymac/ps2-port-engine-3d](https://github.com/nautymac/ps2-port-engine-3d)
+> (private as well). The download is `Burnout3-PC-3D-<version>-windows-x64.zip`
+> in [Releases](../../releases); the 3D is described at the top of the player
+> README ([games/burnout3/port/release/README.txt](games/burnout3/port/release/README.txt))
+> and in Korean in [README-3D-ko.txt](games/burnout3/port/release/README-3D-ko.txt).
+> `ps2sr.dll`, the SR weaver's bridge, is built apart against the Leia SR SDK,
+> which is not in either repository: `cmake -S engine/gpu/sr_bridge -B <dir>
+> -G Ninja -DSR_SDK=<the SDK's folder>`.
+>
+> **입체 3D 빌드 (nautymac, 비공개).** 원작 포트에 입체 3D(좌우 나란히, SR 패널 위빙)를
+> 더한 저장소입니다. 받을 파일은 Releases의 `Burnout3-PC-3D-<버전>-windows-x64.zip`,
+> 한국어 안내는 압축 안의 `README-3D-ko.txt`입니다.
+
 **Burnout 3: Takedown, native on Windows.** The PS2 game's program translated
 to C++ and compiled for the PC - not emulated: 60 frames a second or your
 screen's own rate, up to 4x the PS2's resolution, modern graphics, widescreen

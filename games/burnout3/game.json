@@ -1,7 +1,7 @@
 {
   "name": "Burnout 3: Takedown (NTSC-U)",
   "title": "Burnout 3: Takedown",
-  "version": "0.8.0-alpha",
+  "version": "0.8.0-alpha-3d.1",
   "android_package": "io.github.danielgomesvieira2000.burnout3",
   "android_label": "Burnout 3",
   "iso": "../../Burnout 3 - Takedown.iso",
@@ -19,10 +19,11 @@
   "pgo_env": {"race_modern": {"PS2HOST_TEXTURE_PACK": "{game}/../../replacements"}},
   "lto": true,
   "release": {
-    "name": "Burnout3-PC",
+    "name": "Burnout3-PC-3D",
     "extras": {
       "texture pack/README.txt": "port/release/texture_pack_README.txt",
-      "custom_songs/README.txt": "port/release/custom_songs_README.txt"
+      "custom_songs/README.txt": "port/release/custom_songs_README.txt",
+      "README-3D-ko.txt": "port/release/README-3D-ko.txt"
     }
   }
 }

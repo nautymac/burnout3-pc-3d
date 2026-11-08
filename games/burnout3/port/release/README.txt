@@ -1,3 +1,39 @@
+Stereo 3D build of the port (nautymac's, not the official release)
+------------------------------------------------------------------
+
+This is the {version} port with stereo 3D added - for 3D TVs, VR viewers and
+side-by-side glasses, and woven for Acer SpatialLabs and other Leia SR
+autostereoscopic panels. Everything else is the port as its author released
+it; the rest of this file is the port's own README. (A guide in Korean:
+README-3D-ko.txt.)
+
+PC SETTINGS > VIDEO:
+  3D            OFF, SIDE BY SIDE (the two eyes' pictures beside each other),
+                or SR DISPLAY (woven for an SR panel - see below)
+  3D DEPTH      LOW, MEDIUM, HIGH, MOST - or finer with Ctrl+F5 / Ctrl+F6
+  Ctrl+F7 / F8  the convergence (what sits on the screen's plane) nearer or
+                further; saved, like the depth
+  RENDERER      DIRECT3D 11 is the one for SR DISPLAY: the SR weaver then
+                works on the game's own Direct3D 11 device. VULKAN works too.
+
+In 3D the game draws two pictures a game step (120 a second), one for each
+eye; FRAME RATE does not apply. Movies and loading screens are flat. The
+choices are kept in pc_settings.ini (stereo = off, sbs or sr; stereo_depth;
+stereo_convergence; renderer).
+
+SR DISPLAY needs ps2sr.dll beside burnout3.exe (it is in this zip) and the SR
+runtime installed (the SpatialLabs / Leia SR software that came with the
+panel). Without either it shows side by side. ps2sr.dll is built against the
+Leia SR SDK; neither the SDK nor the runtime is part of this download.
+
+Getting started: unzip, run burnout3.exe, choose your own disc image (NTSC-U,
+SLUS-21050), then PC SETTINGS > VIDEO > 3D (and RENDERER: DIRECT3D 11 for an
+SR panel - it applies from the next start).
+
+Not affiliated with the port's author, Electronic Arts or Criterion Games.
+
+==========================================================================
+
 Burnout 3: Takedown - PC port, version {version}
 =================================================
 
