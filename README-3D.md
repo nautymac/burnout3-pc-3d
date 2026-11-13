@@ -10,6 +10,9 @@ glasses-free 3D panels. It is not the port author's release and has nothing
 to do with Electronic Arts or Criterion Games. **No game content is included:
 everyone needs their own copy of the game.**
 
+It is built on the port's **[0.8.0-alpha release](https://github.com/danielgomesvieira2000/burnout3-pc/releases/tag/v0.8.0-alpha)**. The 3D zip is the
+whole port with 3D added - you don't need to install the original first.
+
 ## 1. Getting the download
 
 These repositories are private, so the release can't be seen by people who
@@ -50,9 +53,23 @@ repository, `nautymac/ps2-port-engine-3d` (see section 7).
 3. The first time, choose your disc image. The choice is kept in
    `pc_settings.ini` beside the program.
 
+### Already have the PC port installed?
+
+(The original port's download is
+[Burnout3-PC-0.8.0-alpha-windows-x64.zip](https://github.com/danielgomesvieira2000/burnout3-pc/releases/tag/v0.8.0-alpha).)
+Copy the files from **inside** the zip's folder (`Burnout3-PC-3D-<version>\`)
+into your PC port folder and let them replace what is there - unzipping it
+"here" only makes a subfolder. `burnout3.exe`, `burnout3-sse4.exe` and the
+READMEs are replaced, `ps2sr.dll` and `README-3D-ko.txt` are added; your
+`pc_settings.ini`, `memcard\` (saves), `custom_songs\` and `texture pack\` stay
+as they are. 3D starts off - turn it on in PC SETTINGS > VIDEO. This build is
+the port's 0.8.0 with 3D, so an older install becomes 0.8.0 too. To be able to
+go back, rename your original `burnout3.exe` first (e.g.
+`burnout3-original.exe`).
+
 ## 4. Turning on 3D
 
-In the main menu: **PC SETTINGS > VIDEO**.
+In the main menu: **PC SETTINGS > VIDEO** - 3D and 3D DEPTH are its first two rows.
 
 | Setting | Choose |
 |---|---|
@@ -122,6 +139,9 @@ SpatialLabs 같은 Leia SR 무안경 3D 패널용 **SR DISPLAY**(위빙)를 지�
 빌드이며, **게임 데이터는 들어 있지 않습니다. 각자 게임을 갖고 있어야
 합니다.**
 
+원작 포트의 **[0.8.0-alpha 릴리스](https://github.com/danielgomesvieira2000/burnout3-pc/releases/tag/v0.8.0-alpha)**를 바탕으로 했습니다. 3D zip은 원작
+포트 전체에 3D를 더한 것이라 원작을 먼저 설치할 필요는 없습니다.
+
 ### 1. 받는 방법
 
 이 저장소는 비공개라서 초대받지 않은 사람에게는 릴리스가 보이지 않습니다.
@@ -159,9 +179,22 @@ SpatialLabs 같은 Leia SR 무안경 3D 패널용 **SR DISPLAY**(위빙)를 지�
 3. 처음 한 번 디스크 이미지를 고릅니다. 위치는 옆의 `pc_settings.ini`에
    저장됩니다.
 
+#### PC 포트를 이미 설치해 두었다면
+
+(원작 포트 다운로드: [Burnout3-PC-0.8.0-alpha-windows-x64.zip](https://github.com/danielgomesvieira2000/burnout3-pc/releases/tag/v0.8.0-alpha))
+zip 안의 폴더(`Burnout3-PC-3D-<버전>\`) **안에 있는 파일들**을 기존 PC 포트
+폴더에 복사해 덮어쓰면 됩니다(zip을 그 자리에 풀면 하위 폴더만 생깁니다).
+`burnout3.exe`, `burnout3-sse4.exe`, README가 바뀌고 `ps2sr.dll`,
+`README-3D-ko.txt`가 추가되며, `pc_settings.ini`, `memcard\`(세이브),
+`custom_songs\`, `texture pack\`은 그대로 남습니다. 3D는 꺼진 상태로
+시작하니 PC SETTINGS > VIDEO에서 켜세요. 이 빌드는 원작 포트 0.8.0에 3D를
+더한 것이라 이전 버전을 쓰고 있었다면 0.8.0으로 함께 올라갑니다. 되돌릴 수
+있게 하려면 먼저 원래 `burnout3.exe`의 이름을 바꿔 두세요(예:
+`burnout3-original.exe`).
+
 ### 4. 3D 켜기
 
-메인 메뉴 **PC SETTINGS > VIDEO**에서:
+메인 메뉴 **PC SETTINGS > VIDEO**의 맨 위 두 줄(3D, 3D DEPTH)에서:
 
 | 항목 | 선택 |
 |---|---|

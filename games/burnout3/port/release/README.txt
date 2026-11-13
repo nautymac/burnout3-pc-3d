@@ -7,7 +7,7 @@ autostereoscopic panels. Everything else is the port as its author released
 it; the rest of this file is the port's own README. (A guide in Korean:
 README-3D-ko.txt.)
 
-PC SETTINGS > VIDEO:
+PC SETTINGS > VIDEO (its first two rows):
   3D            OFF, SIDE BY SIDE (the two eyes' pictures beside each other),
                 or SR DISPLAY (woven for an SR panel - see below)
   3D DEPTH      LOW, MEDIUM, HIGH, MOST - or finer with Ctrl+F5 / Ctrl+F6

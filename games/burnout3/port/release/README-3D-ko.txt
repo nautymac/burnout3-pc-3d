@@ -19,7 +19,7 @@ Acer SpatialLabs 같은 Leia SR 무안경 3D 패널에는 위빙해서 보여 �
 ---------
 1. 압축을 쓰기 가능한 폴더에 풉니다(Program Files 안은 피하세요).
 2. burnout3.exe를 실행하고, 처음 한 번 본인 디스크 이미지를 고릅니다.
-3. 메인 메뉴의 PC SETTINGS > VIDEO에서
+3. 메인 메뉴의 PC SETTINGS > VIDEO 맨 위에서
    - 3D: SIDE BY SIDE(좌우 나란히) 또는 SR DISPLAY(SR 패널)
    - RENDERER: SR 패널이면 DIRECT3D 11 권장(다음 실행부터 적용)
    - 3D DEPTH: 입체 깊이

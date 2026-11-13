@@ -533,7 +533,7 @@ struct PageInfo {
     const char* help;
 };
 const PageInfo kPages[] = {
-    {Page::kVideo, "VIDEO", "THE WINDOW, FRAME RATE, RESOLUTION, SHAPE AND SMOOTHING"},
+    {Page::kVideo, "VIDEO", "3D, THE WINDOW, FRAME RATE, RESOLUTION, SHAPE AND SMOOTHING"},
     {Page::kGraphics, "GRAPHICS", "THE GAME'S OWN EFFECTS"},
     {Page::kControls, "CONTROLS", "YOUR KEYS AND BUTTONS, AND THE BUTTONS SHOWN"},
     {Page::kMods, "MODS", "NEHALEM'S MODS: KM/H, MIRROR MODE, TRAFFIC AND MORE"},
@@ -727,6 +727,12 @@ void SetTraffic(int which) {
     if (which > 0) ps2host::SetSetting("traffic_density", kTrafficDensities[which - 1]);
 }
 const Option kOptions[] = {
+    // The 3D first: the list shows six rows, and at the page's end (its 11th
+    // and 12th) they were not seen.
+    {Page::kVideo, "3D", "STEREO 3D: SIDE BY SIDE FOR A 3D SCREEN, OR WOVEN FOR AN SR DISPLAY", Stereo, SetStereo,
+     {"OFF", "SIDE BY SIDE", "SR DISPLAY"}, 3},
+    {Page::kVideo, "3D DEPTH", "HOW DEEP THE 3D LOOKS (FINER: CTRL WITH F5 OR F6)",
+     StereoDepth, SetStereoDepth, {"LOW", "MEDIUM", "HIGH", "MOST"}, 4},
     {Page::kVideo, "FULLSCREEN", "THE WHOLE SCREEN OR A WINDOW (ALT+ENTER)", Fullscreen, SetFullscreen, {"OFF", "ON"}, 2},
     {Page::kVideo, "VERTICAL SYNC", "NO TEARING, OR THE LEAST DELAY", Vsync, SetVsync, {"OFF", "ON"}, 2},
     {Page::kVideo, "VRR (G-SYNC, FREESYNC)", "ON IF YOUR SCREEN'S REFRESH FOLLOWS THE GAME: SMOOTH HIGH FRAME RATES",
@@ -747,10 +753,6 @@ const Option kOptions[] = {
      SetAspect, {"ORIGINAL (4:3)", "WIDESCREEN (16:9)", "AUTO"}, 3},
     {Page::kVideo, "ANTIALIASING", "EDGES AS DRAWN, SMOOTHED (FXAA, SMAA), OR SUPERSAMPLED (SSAA)",
      AntiAliasing, SetAntiAliasing, {"OFF", "FXAA", "SMAA", "SSAA 2X"}, 4},
-    {Page::kVideo, "3D", "STEREO 3D: SIDE BY SIDE FOR A 3D SCREEN, OR WOVEN FOR AN SR DISPLAY", Stereo, SetStereo,
-     {"OFF", "SIDE BY SIDE", "SR DISPLAY"}, 3},
-    {Page::kVideo, "3D DEPTH", "HOW DEEP THE 3D LOOKS (FINER: CTRL WITH F5 OR F6)",
-     StereoDepth, SetStereoDepth, {"LOW", "MEDIUM", "HIGH", "MOST"}, 4},
     {Page::kGraphics, "PRESET", "EVERY ROW AT ONCE: THE GAME AS IT WAS, OR MODERN PICTURES", Preset,
      SetPreset, {"ORIGINAL", "MODERN", "CUSTOM"}, 3},
     {Page::kGraphics, "LIGHTING", "THE PICTURE'S TONE AND COLOUR: AS DRAWN, OR MODERN", Lighting,
