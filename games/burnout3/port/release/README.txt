@@ -17,9 +17,11 @@ PC SETTINGS > VIDEO:
                 works on the game's own Direct3D 11 device. VULKAN works too.
 
 In 3D the game draws two pictures a game step (120 a second), one for each
-eye; FRAME RATE does not apply. Movies and loading screens are flat. The
-choices are kept in pc_settings.ini (stereo = off, sbs or sr; stereo_depth;
-stereo_convergence; renderer).
+eye; FRAME RATE does not apply. Movies are flat; a short loading screen
+between two 3D scenes keeps the last 3D picture on screen. The choices are
+kept in pc_settings.ini (stereo = off, sbs or sr; stereo_depth;
+stereo_convergence; renderer). A PCSX2 texture pack works in 3D too (see
+"Texture packs" below).
 
 SR DISPLAY needs ps2sr.dll beside burnout3.exe (it is in this zip) and the SR
 runtime installed (the SpatialLabs / Leia SR software that came with the
@@ -29,6 +31,10 @@ Leia SR SDK; neither the SDK nor the runtime is part of this download.
 Getting started: unzip, run burnout3.exe, choose your own disc image (NTSC-U,
 SLUS-21050), then PC SETTINGS > VIDEO > 3D (and RENDERER: DIRECT3D 11 for an
 SR panel - it applies from the next start).
+
+Updating to a new version: unzip it into a new folder and copy
+pc_settings.ini, memcard\ (your saves), custom_songs\ and texture pack\ over
+from the old one.
 
 Not affiliated with the port's author, Electronic Arts or Criterion Games.
 

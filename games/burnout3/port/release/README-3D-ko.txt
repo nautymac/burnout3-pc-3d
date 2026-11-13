@@ -32,13 +32,31 @@ Acer SpatialLabs 같은 Leia SR 무안경 3D 패널에는 위빙해서 보여 �
 참고
 ----
 - 3D에서는 한 게임 스텝에 두 장(초당 120장)을 그려 눈마다 한 장씩 씁니다.
-  FRAME RATE 설정은 적용되지 않습니다. 동영상과 로딩 화면은 평면입니다.
+  FRAME RATE 설정은 적용되지 않습니다. 동영상은 평면이고, 3D 장면 사이의
+  짧은 로딩 화면 동안에는 마지막 3D 화면이 유지됩니다.
 - SR DISPLAY에는 burnout3.exe 옆의 ps2sr.dll(이 압축 파일에 포함)과 SR
   런타임이 필요합니다. 둘 중 하나가 없으면 좌우 나란히로 나옵니다.
   ps2sr.dll은 Leia SR SDK로 빌드했고, SDK와 런타임은 포함되어 있지 않습니다.
 - 설정은 burnout3.exe 옆 pc_settings.ini에 저장됩니다
   (stereo = off / sbs / sr, stereo_depth, stereo_convergence, renderer).
 - 문제가 있으면 burnout3.exe 옆의 burnout3.log를 함께 알려 주세요.
+
+텍스처 팩 (선택)
+----------------
+Burnout 3(SLUS-21050)용 PCSX2 텍스처 팩을 3D에서도 쓸 수 있습니다. 이
+파일에는 들어 있지 않으니 직접 구하세요. 팩의 파일을 burnout3.exe 옆의
+"texture pack" 폴더에 넣으면 됩니다(하위 폴더 가능, 예:
+texture pack\SLUS-21050\replacements\...). 게임 중 Tab 키로 켜고 끕니다.
+
+새 버전으로 업데이트
+--------------------
+새 버전을 새 폴더에 풀고, 이전 폴더의 pc_settings.ini(설정), memcard\(세이브),
+custom_songs\, texture pack\ 을 복사해 옵니다.
+
+다른 사람에게 주기
+------------------
+이 zip 파일을 그대로 전달하면 됩니다(게임 데이터는 들어 있지 않음). 받는
+사람도 본인 소유의 디스크 이미지가 필요합니다.
 
 원작 포트 작성자, Electronic Arts, Criterion Games와 관계없는 비공식 빌드입니다.
 "Burnout"은 Electronic Arts Inc.의 상표입니다.

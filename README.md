@@ -9,13 +9,16 @@
 > in [Releases](../../releases); the 3D is described at the top of the player
 > README ([games/burnout3/port/release/README.txt](games/burnout3/port/release/README.txt))
 > and in Korean in [README-3D-ko.txt](games/burnout3/port/release/README-3D-ko.txt).
+> **How to get it and use it - giving it to someone else, installing, turning
+> on 3D, a texture pack, updating: [README-3D.md](README-3D.md).**
 > `ps2sr.dll`, the SR weaver's bridge, is built apart against the Leia SR SDK,
 > which is not in either repository: `cmake -S engine/gpu/sr_bridge -B <dir>
 > -G Ninja -DSR_SDK=<the SDK's folder>`.
 >
 > **입체 3D 빌드 (nautymac, 비공개).** 원작 포트에 입체 3D(좌우 나란히, SR 패널 위빙)를
 > 더한 저장소입니다. 받을 파일은 Releases의 `Burnout3-PC-3D-<버전>-windows-x64.zip`,
-> 한국어 안내는 압축 안의 `README-3D-ko.txt`입니다.
+> 한국어 안내는 압축 안의 `README-3D-ko.txt`입니다. **다른 사람에게 주는 방법, 설치, 3D 켜기,
+> 텍스처 팩, 업데이트: [README-3D.md](README-3D.md#한국어).**
 
 **Burnout 3: Takedown, native on Windows.** The PS2 game's program translated
 to C++ and compiled for the PC - not emulated: 60 frames a second or your
