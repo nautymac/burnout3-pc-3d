@@ -36,7 +36,8 @@ repository, `nautymac/ps2-port-engine-3d` (see section 7).
 ## 2. What you need
 
 - Windows 10 or 11, 64-bit.
-- A graphics card with Direct3D 11 or Vulkan 1.1 drivers. A processor with
+- A graphics card with Direct3D 11 drivers (this build draws with Direct3D 11
+  only; there is no Vulkan choice). A processor with
   AVX2 runs `burnout3.exe`; an older one gets `burnout3-sse4.exe`, which
   `burnout3.exe` starts by itself.
 - **Your own disc image** of Burnout 3: Takedown for the PS2, North American
@@ -74,7 +75,6 @@ In the main menu: **PC SETTINGS > VIDEO** - 3D and 3D DEPTH are its first two ro
 | Setting | Choose |
 |---|---|
 | 3D | **SIDE BY SIDE** for a 3D TV, VR viewer or side-by-side glasses; **SR DISPLAY** for an SR panel |
-| RENDERER | **DIRECT3D 11** for an SR panel (applies from the next start); VULKAN works too |
 | FULLSCREEN | ON for an SR panel |
 | 3D DEPTH | LOW, MEDIUM, HIGH, MOST |
 
@@ -164,7 +164,8 @@ SpatialLabs 같은 Leia SR 무안경 3D 패널용 **SR DISPLAY**(위빙)를 지�
 ### 2. 준비물
 
 - Windows 10/11 64비트
-- Direct3D 11 또는 Vulkan 1.1 드라이버가 있는 그래픽카드. AVX2가 없는 CPU는
+- Direct3D 11 드라이버가 있는 그래픽카드(이 빌드는 Direct3D 11로만 그리며 Vulkan
+  선택은 없습니다). AVX2가 없는 CPU는
   `burnout3.exe`가 알아서 `burnout3-sse4.exe`를 실행합니다.
 - **본인 소유의 Burnout 3: Takedown PS2 북미판 디스크 이미지**(NTSC-U,
   **SLUS-21050**, `.iso`)
@@ -199,7 +200,6 @@ zip 안의 폴더(`Burnout3-PC-3D-<버전>\`) **안에 있는 파일들**을 기
 | 항목 | 선택 |
 |---|---|
 | 3D | 3D TV·VR 뷰어·SBS 안경은 **SIDE BY SIDE**, SR 패널은 **SR DISPLAY** |
-| RENDERER | SR 패널은 **DIRECT3D 11** 권장(다음 실행부터 적용), VULKAN도 동작 |
 | FULLSCREEN | SR 패널은 ON |
 | 3D DEPTH | LOW, MEDIUM, HIGH, MOST |
 

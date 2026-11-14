@@ -10,7 +10,7 @@ Acer SpatialLabs 같은 Leia SR 무안경 3D 패널에는 위빙해서 보여 �
 준비물
 ------
 - Windows 10/11 64비트
-- Vulkan 1.1 또는 Direct3D 11을 지원하는 그래픽 드라이버
+- Direct3D 11을 지원하는 그래픽 드라이버(이 3D 빌드는 Direct3D 11로만 그립니다)
 - 본인 소유의 Burnout 3: Takedown 북미판 PS2 디스크 이미지(SLUS-21050, .iso)
   게임 데이터는 이 파일 안에 들어 있지 않고, 받을 수도 없습니다.
 - SR 패널로 볼 때: SR 런타임(패널과 함께 설치된 SpatialLabs / Leia SR 소프트웨어)
@@ -21,7 +21,6 @@ Acer SpatialLabs 같은 Leia SR 무안경 3D 패널에는 위빙해서 보여 �
 2. burnout3.exe를 실행하고, 처음 한 번 본인 디스크 이미지를 고릅니다.
 3. 메인 메뉴의 PC SETTINGS > VIDEO 맨 위에서
    - 3D: SIDE BY SIDE(좌우 나란히) 또는 SR DISPLAY(SR 패널)
-   - RENDERER: SR 패널이면 DIRECT3D 11 권장(다음 실행부터 적용)
    - 3D DEPTH: 입체 깊이
 
 키
@@ -38,7 +37,7 @@ Acer SpatialLabs 같은 Leia SR 무안경 3D 패널에는 위빙해서 보여 �
   런타임이 필요합니다. 둘 중 하나가 없으면 좌우 나란히로 나옵니다.
   ps2sr.dll은 Leia SR SDK로 빌드했고, SDK와 런타임은 포함되어 있지 않습니다.
 - 설정은 burnout3.exe 옆 pc_settings.ini에 저장됩니다
-  (stereo = off / sbs / sr, stereo_depth, stereo_convergence, renderer).
+  (stereo = off / sbs / sr, stereo_depth, stereo_convergence).
 - 문제가 있으면 burnout3.exe 옆의 burnout3.log를 함께 알려 주세요.
 
 텍스처 팩 (선택)

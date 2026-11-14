@@ -13,14 +13,15 @@ PC SETTINGS > VIDEO (its first two rows):
   3D DEPTH      LOW, MEDIUM, HIGH, MOST - or finer with Ctrl+F5 / Ctrl+F6
   Ctrl+F7 / F8  the convergence (what sits on the screen's plane) nearer or
                 further; saved, like the depth
-  RENDERER      DIRECT3D 11 is the one for SR DISPLAY: the SR weaver then
-                works on the game's own Direct3D 11 device. VULKAN works too.
+
+This build always draws with Direct3D 11 (the SR weaver works on the game's
+own Direct3D 11 device): there is no RENDERER row, and Vulkan is not used.
 
 In 3D the game draws two pictures a game step (120 a second), one for each
 eye; FRAME RATE does not apply. Movies are flat; a short loading screen
 between two 3D scenes keeps the last 3D picture on screen. The choices are
 kept in pc_settings.ini (stereo = off, sbs or sr; stereo_depth;
-stereo_convergence; renderer). A PCSX2 texture pack works in 3D too (see
+stereo_convergence). A PCSX2 texture pack works in 3D too (see
 "Texture packs" below).
 
 SR DISPLAY needs ps2sr.dll beside burnout3.exe (it is in this zip) and the SR
@@ -29,8 +30,7 @@ panel). Without either it shows side by side. ps2sr.dll is built against the
 Leia SR SDK; neither the SDK nor the runtime is part of this download.
 
 Getting started: unzip, run burnout3.exe, choose your own disc image (NTSC-U,
-SLUS-21050), then PC SETTINGS > VIDEO > 3D (and RENDERER: DIRECT3D 11 for an
-SR panel - it applies from the next start).
+SLUS-21050), then PC SETTINGS > VIDEO > 3D.
 
 Updating to a new version: unzip it into a new folder and copy
 pc_settings.ini, memcard\ (your saves), custom_songs\ and texture pack\ over
@@ -70,10 +70,9 @@ What you need
   processors with AVX2 (Intel Haswell / AMD Ryzen or newer); on one
   without it (Intel Pentium and Celeron before 2021) it starts
   burnout3-sse4.exe, beside it, by itself
-* A graphics card with a Vulkan (1.1 or later) or Direct3D 11 driver: NVIDIA GTX 600
-  series, AMD HD 7000 series, Intel HD 4000 or newer, with current drivers
-  (Vulkan where the driver has it, Direct3D 11 otherwise: the same
-  pictures)
+* A graphics card with a Direct3D 11 driver: NVIDIA GTX 600 series, AMD HD
+  7000 series, Intel HD 4000 or newer, with current drivers (this 3D build
+  draws with Direct3D 11 only)
 * Your own disc image of Burnout 3: Takedown, the North American (NTSC-U)
   release: SLUS-21050. Other regions are not supported yet.
 
@@ -217,8 +216,8 @@ long gone) has four pages and the game's hidden menu (Triangle goes back):
              the heaviest on the GPU), and GPU BOOST (on by default, an
              NVIDIA GPU's: its clocks kept up through menus and loading
              screens, so a race's start does not stutter while it wakes up;
-             OFF saves a laptop's battery), and RENDERER: AUTO (Vulkan,
-             else Direct3D 11), VULKAN or DIRECT3D 11 - from the next start
+             OFF saves a laptop's battery). (No RENDERER in this 3D build:
+             Direct3D 11 always.)
   GRAPHICS   how the game looks: PRESET on top (ORIGINAL, the game as it
              was, or MODERN - every row at once; CUSTOM once one is
              changed), then each on its own - MODERN by default (on a
